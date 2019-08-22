@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -36,7 +37,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	FVector vHitLocation; 
 	if (GetSightRayHitLocation(vHitLocation))
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *vHitLocation.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *vHitLocation.ToString());
 		//Get world location of line trace through the crosshair
 
 		//Tell controlled tank to aim towards hit point
@@ -50,18 +51,25 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector &hitLocation) const
 	GetViewportSize(iViewPortsizeX, iViewPortsizeY);
 	FVector2D v2ScreenLocation = FVector2D(m_iCrossHairXlocation * iViewPortsizeX, m_iCrossHairYlocation * iViewPortsizeY);
 
+	FVector vLocation;
 	FVector vlookDirection;
-	if (GetLookDirection(v2ScreenLocation, vlookDirection))
+	if (DeprojectScreenPositionToWorld(v2ScreenLocation.X, v2ScreenLocation.Y, vLocation, vlookDirection))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *vlookDirection.ToString());
+		GetLookVectorHitLocation(vlookDirection, hitLocation);
 	}
-
 	return true;
 }
 
-bool ATankPlayerController::GetLookDirection(FVector2D screenLocaiton, FVector& lookDirection) const
+bool ATankPlayerController::GetLookVectorHitLocation(FVector lookDirection, FVector &hitLocation) const
 {
-	//World location of the crosshair on screen
-	FVector vLocation;
-	return DeprojectScreenPositionToWorld(screenLocaiton.X, screenLocaiton.Y, vLocation, lookDirection);
+	FHitResult hitResult;
+	FVector startLocation = PlayerCameraManager->GetCameraLocation();
+	FVector endLocation = startLocation + (lookDirection * m_fLiineTraceTange);
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, startLocation, endLocation, ECollisionChannel::ECC_Visibility))
+	{
+		hitLocation = hitResult.Location;
+		return true;
+	}
+	hitLocation = FVector(0);
+	return false;
 }
