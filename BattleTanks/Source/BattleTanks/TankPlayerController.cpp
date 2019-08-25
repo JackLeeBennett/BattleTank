@@ -37,10 +37,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	FVector vHitLocation; 
 	if (GetSightRayHitLocation(vHitLocation))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *vHitLocation.ToString());
-		//Get world location of line trace through the crosshair
-
-		//Tell controlled tank to aim towards hit point
+		GetControlledTank()->AimAt(vHitLocation);
 	}
 }
 
