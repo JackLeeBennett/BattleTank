@@ -26,7 +26,7 @@ void ATank::Tick(float DeltaTime)
 }
 
 // Called from BP
-void ATank::SetBarrelReferance(UStaticMeshComponent* barrelToSet)
+void ATank::SetBarrelReferance(UTankBarrel* barrelToSet)
 {
 	tanksAimingComponent->SetBarrelReferance(barrelToSet);
 }
