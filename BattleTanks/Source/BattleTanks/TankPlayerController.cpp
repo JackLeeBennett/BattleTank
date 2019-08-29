@@ -3,6 +3,9 @@
 #include "TankPlayerController.h"
 #include "Engine/World.h"
 
+//Game
+#include "Tank.h"
+
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

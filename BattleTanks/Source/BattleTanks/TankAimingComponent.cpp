@@ -45,10 +45,16 @@ void UTankAimingComponent::AimAt(FVector hitLocation, float launchSpeed)
 	FVector vOutLaunchVelocity(0);
 	FVector vStartLocation = barrel->GetSocketLocation(FName("Projectile"));
 
-	if (UGameplayStatics::SuggestProjectileVelocity(this, vOutLaunchVelocity, vStartLocation, hitLocation, launchSpeed, false, ESuggestProjVelocityTraceOption::DoNotTrace))
+	if (UGameplayStatics::SuggestProjectileVelocity(this, vOutLaunchVelocity, vStartLocation, hitLocation, launchSpeed, false, 0, 0, ESuggestProjVelocityTraceOption::DoNotTrace))	//Need to have all params or this will return false sometimes, its a but in UE
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Have aim salution"));
+
 		FVector vAimDirection = vOutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(vAimDirection);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No aim salution"));
 	}
 }
 
