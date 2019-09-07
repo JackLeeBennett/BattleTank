@@ -27,6 +27,13 @@ void ATank::SetBarrelReferance(UTankBarrel* barrelToSet)
 	tanksAimingComponent->SetBarrelReferance(barrelToSet);
 }
 
+// Called from BP
+void ATank::SetTurretReferance(UTankTurret* turretToSet)
+{
+	tanksAimingComponent->SetTurretReferance(turretToSet);
+}
+
+
 // Called to bind functionality to input
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

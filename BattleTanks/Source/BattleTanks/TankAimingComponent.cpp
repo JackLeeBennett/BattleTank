@@ -6,6 +6,7 @@
 
 //Game
 #include "TankBarrel.h"
+#include "TankTurret.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -38,19 +39,24 @@ void UTankAimingComponent::SetBarrelReferance(UTankBarrel* barrelToSet)
 	barrel = barrelToSet;
 }
 
+void UTankAimingComponent::SetTurretReferance(UTankTurret* turretToSet)
+{
+	turret = turretToSet;
+}
+
 void UTankAimingComponent::AimAt(FVector hitLocation, float launchSpeed)
 {
-	if (!barrel) { return; }
+	if (!barrel || !turret) { return; }
 
 	FVector vOutLaunchVelocity(0);
 	FVector vStartLocation = barrel->GetSocketLocation(FName("Projectile"));
 
 	if (UGameplayStatics::SuggestProjectileVelocity(this, vOutLaunchVelocity, vStartLocation, hitLocation, launchSpeed, false, 0, 0, ESuggestProjVelocityTraceOption::DoNotTrace))	//Need to have all params or this will return false sometimes, its a but in UE
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Have aim salution"));
-
 		FVector vAimDirection = vOutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(vAimDirection);
+		MoveTurretTowards(vAimDirection);
+		UE_LOG(LogTemp, Warning, TEXT("Have aim salution"));
 	}
 	else
 	{
@@ -62,8 +68,18 @@ void UTankAimingComponent::MoveBarrelTowards(FVector aimDirection)
 {
 	//Work out difference between curret barrel rotation and aim direction
 	FRotator rBarrelRotator = barrel->GetForwardVector().Rotation();
-	FRotator rAimAsRotator = aimDirection.Rotation();
-	FRotator rDeltaRotator = rAimAsRotator - rBarrelRotator;	//Difference in rotation
+	FRotator rAimAtRotator = aimDirection.Rotation();
+	FRotator rDeltaRotator = rAimAtRotator - rBarrelRotator;	//Difference in rotation
 	
-	barrel->Elevate(5);
+	barrel->Elevate(rDeltaRotator.Pitch);
+}
+
+void UTankAimingComponent::MoveTurretTowards(FVector aimDirection)
+{
+	//Work out difference between curret turret rotation and aim direction
+	FRotator rTurretRotator = turret->GetForwardVector().Rotation();
+	FRotator rAimAtRotator = aimDirection.Rotation();
+	FRotator rDeltaRotator = rAimAtRotator - rTurretRotator;	//Difference in rotation
+
+	turret->RotateTurret(rDeltaRotator.Yaw);
 }
