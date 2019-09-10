@@ -56,11 +56,6 @@ void UTankAimingComponent::AimAt(FVector hitLocation, float launchSpeed)
 		FVector vAimDirection = vOutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(vAimDirection);
 		MoveTurretTowards(vAimDirection);
-		UE_LOG(LogTemp, Warning, TEXT("Have aim salution"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No aim salution"));
 	}
 }
 

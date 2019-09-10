@@ -18,13 +18,16 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
-	void AimAt(FVector hitLocation);
-
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReferance(UTankBarrel* barrelToSet);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetTurretReferance(UTankTurret* barrelToSet);
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	void Fire();
+
+	void AimAt(FVector hitLocation);
 
 protected:
 	UTankAimingComponent* tanksAimingComponent = nullptr;
