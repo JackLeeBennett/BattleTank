@@ -10,47 +10,30 @@
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ATank* tank = GetControlledTank();
-	if (tank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AI Controller possessing: %s"), *tank->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AI Controller not possesing tank!"));
-	}
-
-	ATank* playerTank = GetPlayerTank();
-
-	if (playerTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AI Controller found the player controller: %s"), *playerTank->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AI Controller did not find the player controller!"));
-	}
 }
 
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ATank* pPedTank = GetPlayerTank();
-	if (pPedTank)
+	ATank* pPlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	ATank* pControlledTank = Cast<ATank>(GetPawn());
+	if (pPlayerTank && pControlledTank)
 	{
-		GetControlledTank()->AimAt(pPedTank->GetActorLocation());
+		pControlledTank->AimAt(pPlayerTank->GetActorLocation());
+
+		pControlledTank->Fire();
 	}
 
 }
 
-ATank* ATankAIController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
-ATank* ATankAIController::GetPlayerTank()
-{
-	return Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
-}
+//Tut told us not to use these but I think they are a good idea?
+//ATank* ATankAIController::GetControlledTank() const
+//{
+//	return Cast<ATank>(GetPawn());
+//}
+//
+//ATank* ATankAIController::GetPlayerTank() const
+//{
+//	return Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
+//}

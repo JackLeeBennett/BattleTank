@@ -47,18 +47,17 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::Fire()
 {
-
-	if (barrel)
+	bool bIsReloaded = (FPlatformTime::Seconds() - fLastFireTime) > fReloadTimeInSeconds;
+	if (barrel && bIsReloaded)
 	{
 		float fTime = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fired"), fTime);
 		//Spawn projectile at 
-		GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, barrel->GetSocketLocation("Projectile"), barrel->GetSocketRotation("Projectile"));
+		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, barrel->GetSocketLocation("Projectile"), barrel->GetSocketRotation("Projectile"));
+
+		projectile->LaunchProjectile(fLaunchSpeed);
+		fLastFireTime = FPlatformTime::Seconds();
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Barrel Found"));
-	}
+
 }
 
 void ATank::AimAt(FVector hitLocaiton)
