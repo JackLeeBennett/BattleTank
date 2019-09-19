@@ -8,4 +8,8 @@ void UTankTrack::SetThrottle(float throttle)
 	UE_LOG(LogTemp, Warning, TEXT("%s throttle: %f"), *sName, throttle);
 
 	//TODO: Clamp these values so player can not drive at different speeds by upping sensativity
+	FVector vForceApplied = GetForwardVector() * throttle * fTrackMaxDrivingForce;
+	FVector	vForceLocation = GetComponentLocation();
+	UPrimitiveComponent* TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+	TankRoot->AddForceAtLocation(vForceApplied, vForceLocation);
 }
